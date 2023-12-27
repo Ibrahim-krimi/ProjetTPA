@@ -36,37 +36,18 @@ public class MapTpa extends  Mapper<Object, Text, Text, Text> {
 
         //recuperer la marque de voiture dans chaque ligne et la netoyer.
         //String myKey = Columns[1].split(" ")[0].replaceAll("[^a-zA-Z0-9]", "");
-        String myKey = replaceAccents(Columns[1]).replaceAll("[^a-zA-Z0-9]", "");
-
+        String[] words = replaceAccents(Columns[1]).split("\\s+"); // Split the string into words using space as the delimiter
+        String myKey = "";
+        if (words.length > 0) {
+            myKey = words[0]; // Take the first word as the car make
+        }
         // recuperer le premier char dans la colonne 'bonusMalus'
         String originalBonusMalus = Columns[2];
         String bonusMalus;
-        //recuperer le numero de la ligne
-         //int id = Integer.parseInt(Columns[0].replaceAll("[^a-zA-Z0-9]", ""));
-         int id = 99999;
-        /*
-        if (!Columns[0].trim().isEmpty()){
-             id = Integer.parseInt(Columns[0]);
-        }
-        if (originalBonusMalus.equals("-")){
-            bonusMalus = "+0";
-        }
-        else {
-            bonusMalus = originalBonusMalus.charAt(0) + originalBonusMalus.substring(1).replaceAll("[^a-zA-Z0-9]", "");
-
-            if (id < 54) {
-                bonusMalus = bonusMalus.replaceAll("1", "");
-            }
-
-            if (!bonusMalus.equals("+0")) {
-                TotalBonusMalus.total += Integer.parseInt(bonusMalus);
-                TotalBonusMalus.count += 1;
-                logPrint(" tBonusMalus " + TotalBonusMalus.total + "count " + TotalBonusMalus.count);
-            }
-
-        }
-             */
         // Regular expression to extract numeric part (including possible leading -/+)
+        if (    TotalBonusMalus.count < 55) {
+            originalBonusMalus = originalBonusMalus.replaceAll("1", "");
+        }
         Pattern pattern = Pattern.compile("[-+]?\\d+");
         Matcher matcher = pattern.matcher(originalBonusMalus);
         if (matcher.find()) {
@@ -82,8 +63,6 @@ public class MapTpa extends  Mapper<Object, Text, Text, Text> {
         } catch (NumberFormatException e) {
             bonusMalusValue = 0.0; // Default to 0.0 if parsing fails
         }
-
-        // Log and accumulate
         TotalBonusMalus.total += bonusMalusValue;
         TotalBonusMalus.count += 1;
         logPrint("La marque "+ myKey +" tBonusMalus " + TotalBonusMalus.total + " count " + TotalBonusMalus.count);
@@ -91,34 +70,8 @@ public class MapTpa extends  Mapper<Object, Text, Text, Text> {
         String myValue1 = String.valueOf(TotalBonusMalus.total) + "," + String.valueOf(TotalBonusMalus.count);
         context.write(new Text("moyenne"), new Text(myValue1));
         context.write(new Text(myKey), new Text(myValue));
-        /*
-
-        //construire la valeur qui sera passer au reducer
-        String myValue = Columns[1].split(" ")[1].replaceAll("[^a-zA-Z0-9]", "") + "," + bonusMalus + "," + Columns[3] + "," + Columns[4];
-        //construire la valeur pour le total des BonnusMalus
-        String myValue1 = String.valueOf(TotalBonusMalus.total) + "," + String.valueOf(TotalBonusMalus.count);
-        //ecrire les valeurs obtenu de total des BonnusMalus
-        context.write(new Text("moyenne"), new Text(myValue1));
-        // ecrire la valaur construite dans cette format : key = marque , value le reste de la ligne
-        context.write(new Text(myKey), new Text(myValue));
-         */
 
     }
-
-    /*
-    private static void logPrint(String line) {
-        if (!node_was_initialized) {
-            try {
-                console_log = new PrintStream(new FileOutputStream("/tmp/my_mapred_log.txt", true));
-            } catch (FileNotFoundException e) {
-                return;
-            }
-            node_was_initialized = true;
-        }
-        console_log.println(line);
-    }
-
-     */
 
     private static void logPrint(String line) {
         LOGGER.info(line);
