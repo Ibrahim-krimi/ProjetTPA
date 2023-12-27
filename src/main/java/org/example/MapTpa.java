@@ -30,6 +30,10 @@ public class MapTpa extends  Mapper<Object, Text, Text, Text> {
     @Override
     protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
 
+        if (isHeader) {
+            isHeader = false; // Set to false after processing the header line
+            return; // Skip further processing for header line
+        }
         //séparer les valeur de chaque ligne avec ","
         String valueString = value.toString();
         String[] Columns = valueString.split(",");
@@ -68,7 +72,7 @@ public class MapTpa extends  Mapper<Object, Text, Text, Text> {
         logPrint("La marque "+ myKey +" tBonusMalus " + TotalBonusMalus.total + " count " + TotalBonusMalus.count);
         String myValue = Columns[1].split(" ")[1].replaceAll("[^a-zA-Z0-9]", "") + "," + bonusMalus + "," + Columns[3] + "," + Columns[4];
         String myValue1 = String.valueOf(TotalBonusMalus.total) + "," + String.valueOf(TotalBonusMalus.count);
-        context.write(new Text("moyenne"), new Text(myValue1));
+        context.write(new Text("FIRST"), new Text(myValue1));
         context.write(new Text(myKey), new Text(myValue));
 
     }
