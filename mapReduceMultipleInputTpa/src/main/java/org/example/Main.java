@@ -7,41 +7,34 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
+import org.apache.hadoop.mapreduce.lib.input.MultipleInputs;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
 
-public class Main {
-    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
-        // Instantiate the Hadoop Configuration.
-        Configuration conf = new Configuration();
+public class main {
 
-        // Parse command-line arguments.
-
-        String[] ourArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
-        // Check input arguments.
-        if (ourArgs.length <= 1) {
-            System.err.println("Usage: TPA <in> <out>");
-            System.exit(1);
-        }
-
-        // Get a Job instance.
-        Job job = Job.getInstance(conf, "TPA");
-        // Setup the Driver/Mapper/Reducer classes.
-        job.setJarByClass(Main.class);
-        job.setMapperClass(MapTpa.class);
-        //  Configurez le Reducer en fonction du paramètre
+    //Creation de l'objet de Configuration Hadoop
+    public static void main(String[] args) throws Exception
+    {
+        Configuration conf=new Configuration();
+        Job job=Job.getInstance(conf, "TPA2");
+        // Deefini les classes driver, map et reduce.
+        job.setJarByClass(main.class);
         job.setReducerClass(ReduceTpa.class);
+
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 
-        // Indicate from where to read input data from HDFS.
-        FileInputFormat.addInputPath(job, new Path(ourArgs[0]));
-        //FileInputFormat.addInputPath(job, new Path(ourArgs[1]));
+        // Deefini types clefs/valeurs de notre programme Hadoop.
+        MultipleInputs.addInputPath(job, new Path(args[0]), TextInputFormat.class, CatalogueMap.class);
+        MultipleInputs.addInputPath(job, new Path(args[1]),TextInputFormat.class, CO2Map.class);
+        Path outputPath = new Path(args[2]);
+        FileOutputFormat.setOutputPath(job, outputPath);
 
-        // Indicate where to write the results on HDFS.
-        FileOutputFormat.setOutputPath(job, new Path(ourArgs[1]));
-
-        // We start the MapReduce Job execution (synchronous approach).
-        // If it completes with success we exit with code 0, else with code 1.
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
-    }}
+        if(job.waitForCompletion(true))
+            System.exit(0);
+        System.exit(-1);
+    }
+}

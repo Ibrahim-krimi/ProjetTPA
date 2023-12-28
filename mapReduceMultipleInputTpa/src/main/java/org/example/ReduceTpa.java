@@ -1,104 +1,71 @@
 package org.example;
 
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
-public class ReduceTpa extends Reducer<Text, Text, Text, Text> {
-    private static final Logger LOGGER = LogManager.getLogger(ReduceTpa.class);
-
+public class ReduceTpa extends   Reducer<Text, Text, NullWritable, Text> {
     private static final DecimalFormat df = new DecimalFormat("0.00");
+    static private boolean node_was_initialized = false;
+    // La fonction REDUCE elle-meme. Les arguments: la clef key (d'un type generique K), un Iterable de toutes les valeurs
+    // qui sont associees a la clef en question, et le contexte Hadoop (un handle qui nous permet de renvoyer le resultat a Hadoop).
+    protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException,InterruptedException {
 
-    protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-
-
-        double totalBonusMalus = 0;
-        int countBonusMalus = 0;
-        int count = 0;
-        double totalRejetCo2 = 0;
-        double totalCout = 0;
-
-
-        // recuper les moyen calculer et on garde que celui avec la valeur la plus grande
-        // les keys avec la valeur FIRST sont lister les premiers
+        NullWritable nullWritable = NullWritable.get();
+        ArrayList<String> list = new ArrayList<>();
+        String valeurCO2 = "";
+        /*
+         * nous savons bien que la clé AAAA sera traiter en premier,
+         * donc en stock sa valeur dan sle variable de class moyenTotal pour s'on servir plus tard
+         */
         if (key.toString().equals("FIRST")) {
-            for (Text t : values) {
-                String parts[] = t.toString().split(",");
-                if (TotalBonusMalus.total < Double.parseDouble(parts[0])) {
-                    TotalBonusMalus.total = Double.parseDouble(parts[0]);
-                    TotalBonusMalus.count = Integer.parseInt(parts[3]);
-                    TotalBonusMalus.totalCO2 = Double.parseDouble(parts[1]);
-                    TotalBonusMalus.totalCoutEnergie = Double.parseDouble(parts[2]);
+            for (Text val : values) {
+                TotalClass.moyenTotal = val.toString();
+            }
+
+        } else {
+            /*
+             * Initialiser la valeur de CO2Columns avec la moyenne, car on ne sait pas si elle sera overrided ou pas.
+             * cela depend si la marque dans catalogue exist dans la table CO2
+             */
+            valeurCO2 = TotalClass.moyenTotal;
+
+            //boucler sur les vals
+            for (Text val : values) {
+
+                String valueString = val.toString();
+
+                //recuperer la valeur du tag pour destinguer les deux table catalogue et co2
+                String tag = valueString.split(":")[0];
+
+
+                /*
+                 * ovveride la valeur moyenne de toute la table co2 avec la valeur moyenne de la marque seul
+                 * si il n'exist pas d'une valeur avec un tag co2 cela veut dire que la marque n'exist pas dans  la table co2,
+                 * et donc elle garde la valeur moyenne de toute la table ( regarder en haut )
+                 */
+                if (tag.equals("CO2")) {
+
+
+                    valeurCO2 = valueString.split(":")[1];
                 }
+                if (tag.equals("CATALOGUE")) {
+                    list.add(valueString.split(":")[1]);
+
+                }
+            }
+            //cette boucle nous permette de concatener le moyen d'une marque dans CO2
+            // avec tout les ligne de cette marque dans catalogue, si la marque n'exist pas dans table CO2 elle prends la valeur moyenne
+            for (String myVal : list) {
+                context.write(nullWritable, new Text(key + "," + myVal + "," + valeurCO2));
             }
         }
 
-        else { // le reste des keys
-
-            for (Text t : values) {
-
-                //séparer les valeur de chaque ligne avec ","
-                String parts[] = t.toString().split(",");
-
-                // on va calculer le moyen de BonusMalus pour les marques qui ont au moin une valeur disponible
-                if (!parts[1].equals("") && !parts[1].equals("0")) {
-
-                    totalBonusMalus += Double.parseDouble(parts[1]);
-                    countBonusMalus += 1;
-                }
-
-                // pour les maruqe qui ont aucune valeur disponible de bonusMalus on donne la moyenne
-                if (totalBonusMalus == 0) {
-                    totalBonusMalus = TotalBonusMalus.total;
-                    countBonusMalus = TotalBonusMalus.count;
-                }
-
-                // on calcul le total de RejetCo2 de chaque marque
-                String total = parts[2].replaceAll("[^\\d.-]", "");
-                totalRejetCo2 += Double.parseDouble(total);
-
-                // on calcul le total de Cout de chaque marque
-                totalCout += Double.parseDouble(parts[3].replaceAll("[^a-zA-Z0-9]", ""));
-                count += 1;
-
-
-            }
-
-
-
-
-            // finalement écrira les moyennes calculées de chaque marque
-            context.write(key, new Text(String.valueOf(df.format(totalBonusMalus / countBonusMalus)) + "," + String.valueOf(df.format(totalRejetCo2 / count)) + "," + String.valueOf(df.format(totalCout / count))));
-
-
-        }
-
-
-
 
     }
 
-    @Override
-    protected void cleanup(Reducer<Text, Text, Text, Text>.Context context) throws IOException, InterruptedException {
-        super.cleanup(context);
-        if (TotalBonusMalus.count > 0) {
-            double moyenneGlobaleBonusMalus = TotalBonusMalus.total / TotalBonusMalus.count;
-            double moyenneGlobaleCO2 = TotalBonusMalus.totalCO2 / TotalBonusMalus.count;
-            double moyenneGlobaleCoutEnergie = TotalBonusMalus.totalCoutEnergie / TotalBonusMalus.count;
-
-            String myValue = String.valueOf(moyenneGlobaleBonusMalus) + "," + String.valueOf(moyenneGlobaleCO2) + "," + String.valueOf(moyenneGlobaleCoutEnergie);
-
-            
-            context.write(new Text("forAll"), new Text(myValue));
-
-        }
     }
-
-    private static void logPrint(String line) {
-        LOGGER.info(line);
-    }
-}

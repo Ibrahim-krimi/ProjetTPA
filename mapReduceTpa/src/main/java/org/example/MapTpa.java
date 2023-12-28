@@ -107,7 +107,7 @@ public class MapTpa extends  Mapper<Object, Text, Text, Text> {
         LOGGER.info(line);
     }
     // Custom method to replace accented characters with their ASCII equivalents
-    private static String replaceAccents(String input) {
+    private static String replaceAccents(String input)  {
         String output = Normalizer.normalize(input, Normalizer.Form.NFD);
         output = output.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
         return output;
