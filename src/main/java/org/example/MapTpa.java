@@ -46,10 +46,12 @@ public class MapTpa extends  Mapper<Object, Text, Text, Text> {
             myKey = words[0]; // Take the first word as the car make
         }
         // recuperer le premier char dans la colonne 'bonusMalus'
-        String originalBonusMalus = Columns[2];
+        String originalBonusMalus = Columns[2].replaceAll("[^a-zA-Z0-9]", "");;
         String bonusMalus;
         // Regular expression to extract numeric part (including possible leading -/+)
-        if (    TotalBonusMalus.count < 55) {
+        //recuperer le numero de la ligne
+        int id = Integer.parseInt(Columns[0].replaceAll("[^a-zA-Z0-9]", ""));
+        if (id < 57) {
             originalBonusMalus = originalBonusMalus.replaceAll("1", "");
         }
         Pattern pattern = Pattern.compile("[-+]?\\d+");

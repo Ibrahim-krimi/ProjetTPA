@@ -46,7 +46,7 @@ public class ReduceTpa extends Reducer<Text, Text, Text, Text> {
                 // on vas calculer le moyen de BonusMalus pour les marque qui ont au moin une valeur disponible
                 if (!parts[1].equals("") && !parts[1].equals("0")) {
 
-                    totalBonusMalus += 1;//Double.parseDouble(parts[1]);
+                    totalBonusMalus += Double.parseDouble(parts[1]);
                     countBonusMalus += 1;
                 }
 
@@ -57,10 +57,11 @@ public class ReduceTpa extends Reducer<Text, Text, Text, Text> {
                 }
 
                 // on calcul le total de RejetCo2 de chaque marque
-                totalRejetCo2 += 1;//Double.parseDouble(parts[2]);
+                String total = parts[2].replaceAll("[^\\d.-]", "");
+                totalRejetCo2 += Double.parseDouble(total);
 
                 // on calcul le total de Cout de chaque marque
-                totalCout += 1;//Double.parseDouble(parts[3].replaceAll("[^a-zA-Z0-9]", ""));
+                totalCout += Double.parseDouble(parts[3].replaceAll("[^a-zA-Z0-9]", ""));
                 count += 1;
 
 
