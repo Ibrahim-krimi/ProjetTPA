@@ -29,9 +29,10 @@ public class ReduceTpa extends Reducer<Text, Text, Text, Text> {
             for (Text t : values) {
                 String parts[] = t.toString().split(",");
                 if (TotalBonusMalus.total < Double.parseDouble(parts[0])) {
-                    // on stock la valeur dans un variable de class pour l'utiliser aprés
                     TotalBonusMalus.total = Double.parseDouble(parts[0]);
-                    TotalBonusMalus.count = Integer.parseInt(parts[1]);
+                    TotalBonusMalus.count = Integer.parseInt(parts[3]);
+                    TotalBonusMalus.totalCO2 = Double.parseDouble(parts[1]);
+                    TotalBonusMalus.totalCoutEnergie = Double.parseDouble(parts[2]);
                 }
             }
         }
@@ -43,14 +44,14 @@ public class ReduceTpa extends Reducer<Text, Text, Text, Text> {
                 //séparer les valeur de chaque ligne avec ","
                 String parts[] = t.toString().split(",");
 
-                // on vas calculer le moyen de BonusMalus pour les marque qui ont au moin une valeur disponible
+                // on va calculer le moyen de BonusMalus pour les marques qui ont au moin une valeur disponible
                 if (!parts[1].equals("") && !parts[1].equals("0")) {
 
                     totalBonusMalus += Double.parseDouble(parts[1]);
                     countBonusMalus += 1;
                 }
 
-                // pour les maruqe qui il'ont aucune valeur disponible de bonusMalus on donne la moyenne
+                // pour les maruqe qui ont aucune valeur disponible de bonusMalus on donne la moyenne
                 if (totalBonusMalus == 0) {
                     totalBonusMalus = TotalBonusMalus.total;
                     countBonusMalus = TotalBonusMalus.count;
@@ -81,6 +82,22 @@ public class ReduceTpa extends Reducer<Text, Text, Text, Text> {
 
     }
 
+    @Override
+    protected void cleanup(Reducer<Text, Text, Text, Text>.Context context) throws IOException, InterruptedException {
+        super.cleanup(context);
+        if (TotalBonusMalus.count > 0) {
+            double moyenneGlobaleBonusMalus = TotalBonusMalus.total / TotalBonusMalus.count;
+            double moyenneGlobaleCO2 = TotalBonusMalus.totalCO2 / TotalBonusMalus.count;
+            double moyenneGlobaleCoutEnergie = TotalBonusMalus.totalCoutEnergie / TotalBonusMalus.count;
+
+            String myValue = String.valueOf(moyenneGlobaleBonusMalus) + "," + String.valueOf(moyenneGlobaleCO2) + "," + String.valueOf(moyenneGlobaleCoutEnergie);
+
+
+
+            context.write(new Text("forAll"), new Text(myValue));
+
+        }
+    }
 
     private static void logPrint(String line) {
         LOGGER.info(line);
