@@ -92,8 +92,7 @@ public class ReduceTpa extends Reducer<Text, Text, Text, Text> {
 
             String myValue = String.valueOf(moyenneGlobaleBonusMalus) + "," + String.valueOf(moyenneGlobaleCO2) + "," + String.valueOf(moyenneGlobaleCoutEnergie);
 
-
-
+            
             context.write(new Text("forAll"), new Text(myValue));
 
         }
