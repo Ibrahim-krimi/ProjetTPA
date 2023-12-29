@@ -23,7 +23,7 @@ public class CO2Map extends  Mapper<Object, Text, Text, Text> {
         String res = Columns[1];
         // recuperer la ligne qui contient les moyennes de chaque column
         if (cle.equals("forAll")) {
-            context.write(new Text("FIRST"), new Text(res));
+            context.write(new Text("AAAA"), new Text(res));
 
         }else {
 

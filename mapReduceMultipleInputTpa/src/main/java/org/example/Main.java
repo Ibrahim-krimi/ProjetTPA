@@ -13,7 +13,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
 
-public class main {
+public class Main {
 
     //Creation de l'objet de Configuration Hadoop
     public static void main(String[] args) throws Exception
@@ -21,7 +21,7 @@ public class main {
         Configuration conf=new Configuration();
         Job job=Job.getInstance(conf, "TPA2");
         // Deefini les classes driver, map et reduce.
-        job.setJarByClass(main.class);
+        job.setJarByClass(Main.class);
         job.setReducerClass(ReduceTpa.class);
 
         job.setOutputKeyClass(Text.class);
