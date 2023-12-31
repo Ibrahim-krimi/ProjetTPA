@@ -95,7 +95,7 @@ Nous avons mis en œuvre deux jobs MapReduce distincts pour parvenir à notre ob
   - AutomobileMultupleInput-2.0. (joining two data set).
 
 
-### 2.1. Job 1 - Automobile-2.0
+### 2.1. Job 1 - mapReduceTpa
 
 Le job a pour responsabilité de purifier les données extraites du fichier CO2.csv, de pallier les lacunes informationnelles et de procéder au calcul de la moyenne générale
 
@@ -121,7 +121,7 @@ Au cours de chaque traitement par le job MapReduce, trois types de lignes sont g
       
 ![Resultat_premier_Job](https://github.com/Ibrahim-krimi/ProjetTPA/assets/104140096/b0fd4808-6edd-4ea2-bff8-f8cd24690326)
 
-### 2.2. Job 2 - Automobile-2.0
+### 2.2. Job 2 - mapReduceTpaMultipleInput
 Le travail de ce job consiste à réaliser la jonction des données de la table 'catalogue' avec celles de 'CO2\_Moyennes' en se basant sur l'identifiant de la marque. 
 ![Deuxième job (Automobile-2 0) drawio](https://github.com/Ibrahim-krimi/ProjetTPA/assets/104140096/16a147a0-0d8f-4e45-b670-c16afef62fc8)
 Pour les marques qui ne figurent pas dans 'CO2\_Moyennes', une moyenne globale calculée pour l'ensemble des données sera attribuée, signalée par l'identifiant 'forall'. <br />
