@@ -9,7 +9,7 @@ Toutes les taches réalisées et effectuées au sein de ce projet sont réalisé
 |-----------------------------------------------|----------------------------|
 | BERRIRI Yassine / berririyassine@gmail.com     | Gr3                        |
 | BOUCHEFFA Badis / boucheffa_badis@outlook.com | Gr3                        |
-| KRIMI Ibrahim / ibrahimkrimi2gmail.com        | Gr3                        |
+| KRIMI Ibrahim / ibrahimkrimi2@gmail.com        | Gr3                        |
 | LARABI Marouane / larabimarouane@gmail.com     | Gr3                        |
 | ZOUBID Dounia / dounia.zoubid2000@gmail.com   | Gr3                        |
 
@@ -100,3 +100,14 @@ Nous avons mis en œuvre deux jobs MapReduce distincts pour parvenir à notre ob
 Le job a pour responsabilité de purifier les données extraites du fichier CO2.csv, de pallier les lacunes informationnelles et de procéder au calcul de la moyenne générale
 
 Nettoyage: <br />
+![Premier job (Automobile-2 0)](https://github.com/Ibrahim-krimi/ProjetTPA/assets/104140096/456d8096-4d5d-4065-80b0-076e309b0409)
+![Simulation job1-MapReduce drawio](https://github.com/Ibrahim-krimi/ProjetTPA/assets/104140096/37b9172a-6adc-4209-8d06-478ea3256f2f)
+
+![Resultat_premier_Job](https://github.com/Ibrahim-krimi/ProjetTPA/assets/104140096/b0fd4808-6edd-4ea2-bff8-f8cd24690326)
+
+![Deuxième job (Automobile-2 0) drawio](https://github.com/Ibrahim-krimi/ProjetTPA/assets/104140096/16a147a0-0d8f-4e45-b670-c16afef62fc8)
+![Simulation job2 MapReduce drawio](https://github.com/Ibrahim-krimi/ProjetTPA/assets/104140096/06efa59f-5dd4-4e7b-8591-e01105f5cc32)
+![Resultat_deuxième_Job](https://github.com/Ibrahim-krimi/ProjetTPA/assets/104140096/dade6e50-619e-4409-8254-257dd77244b4)
+
+
+
