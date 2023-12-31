@@ -145,4 +145,4 @@ Exemple de simulation du job2 MapReduce  <br />
 ## 2. Scripts (Programmes)
 
 Ce répertoire contient les scripts utilisés ainsi que les fichiers de résultat des deux jobs 
-
+### Lien de video  : https://youtu.be/v9uxGicwtbA
