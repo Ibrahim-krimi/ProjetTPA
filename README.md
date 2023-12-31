@@ -7,10 +7,10 @@ Toutes les taches réalisées et effectuées au sein de ce projet sont réalisé
 
 | **Nom / mail**                                |  **Groupe**                |
 |-----------------------------------------------|----------------------------|
-| BERRIRI Yassine / oussamasamia1@gmail.com     | Gr3                        |
+| BERRIRI Yassine / berririyassine@gmail.com     | Gr3                        |
 | BOUCHEFFA Badis / boucheffa_badis@outlook.com | Gr3                        |
 | KRIMI Ibrahim / ibrahimkrimi2gmail.com        | Gr3                        |
-| LARABI Marouane / raouamessai98@gmail.com     | Gr3                        |
+| LARABI Marouane / larabimarouane@gmail.com     | Gr3                        |
 | ZOUBID Dounia / dounia.zoubid2000@gmail.com   | Gr3                        |
 
 
