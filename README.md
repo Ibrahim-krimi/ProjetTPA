@@ -95,19 +95,54 @@ Nous avons mis en œuvre deux jobs MapReduce distincts pour parvenir à notre ob
   - AutomobileMultupleInput-2.0. (joining two data set).
 
 
-### 2.1. Premiere job (Automobile-2.0)
+### 2.1. Job 1 - Automobile-2.0
 
 Le job a pour responsabilité de purifier les données extraites du fichier CO2.csv, de pallier les lacunes informationnelles et de procéder au calcul de la moyenne générale
 
 Nettoyage: <br />
 ![Premier job (Automobile-2 0)](https://github.com/Ibrahim-krimi/ProjetTPA/assets/104140096/456d8096-4d5d-4065-80b0-076e309b0409)
-![Simulation job1-MapReduce drawio](https://github.com/Ibrahim-krimi/ProjetTPA/assets/104140096/37b9172a-6adc-4209-8d06-478ea3256f2f)
+Ce job consiste à :
+- Suppression des numéros de ligne.
+- Retrait des modèles de véhicules, ces derniers étant inadéquats pour la correspondance avec les données du catalogue.
+- Affectation de la marque en tant que clé principale pour la phase de Map.
+- Sélection du BonusMalus, des émissions CO2 et du coût comme valeurs associées à cette clé.
+- Remplacement provisoire des valeurs manquantes dans la colonne BonusMalus par zéro, en attente de traitements supplémentaires qui seront détaillés ultérieurement.<br />
 
+Exemple de Simulation du job1 MapReduce <br />
+![Simulation job1-MapReduce drawio](https://github.com/Ibrahim-krimi/ProjetTPA/assets/104140096/37b9172a-6adc-4209-8d06-478ea3256f2f)
+Au cours de chaque traitement par le job MapReduce, trois types de lignes sont générés : <br />
+- La première ligne calcule la moyenne des colonnes pour chaque marque.
+- La deuxième détermine la moyenne générale des marques, utile pour celles présentes dans le catalogue mais absentes du fichier CO2.
+- La troisième ligne, identifiable par la clé "AAAA", établit la moyenne des BonusMalus pour les marques dépourvues de valeurs.
+- Cette clé spéciale garantit le traitement prioritaire par le Reducer et permet de transmettre les moyennes du mapper au Reducer.
+- Seules les marques sans aucune valeur de BonusMalus reçoivent cette moyenne générale, qui est la valeur la plus élevée dans l'ensemble des valeurs "AAAA".
+
+  Résultat : <br />
+      
 ![Resultat_premier_Job](https://github.com/Ibrahim-krimi/ProjetTPA/assets/104140096/b0fd4808-6edd-4ea2-bff8-f8cd24690326)
 
+### 2.2. Job 2 - Automobile-2.0
+Le travail de ce job consiste à réaliser la jonction des données de la table 'catalogue' avec celles de 'CO2\_Moyennes' en se basant sur l'identifiant de la marque. 
 ![Deuxième job (Automobile-2 0) drawio](https://github.com/Ibrahim-krimi/ProjetTPA/assets/104140096/16a147a0-0d8f-4e45-b670-c16afef62fc8)
+Pour les marques qui ne figurent pas dans 'CO2\_Moyennes', une moyenne globale calculée pour l'ensemble des données sera attribuée, signalée par l'identifiant 'forall'. <br />
+Cette méthode permet d'intégrer toutes les marques dans l'analyse, garantissant ainsi une cohérence dans les données résultantes.
+
+Exemple de simulation du job2 MapReduce  <br />
 ![Simulation job2 MapReduce drawio](https://github.com/Ibrahim-krimi/ProjetTPA/assets/104140096/06efa59f-5dd4-4e7b-8591-e01105f5cc32)
+
+ Un mappeur distinct est attribué à chaque jeu de données, soit un pour les entrées du catalogue, soit un pour les entrées des moyennes CO2.
+- Chaque tuple est lu séquentiellement.
+- La tokenisation est appliquée à chaque tuple pour extraire la marque du véhicule.
+- Cette marque devient la clé dans la paire clé-valeur produite par le mappeur.
+- Un tag 'catalogue' ou 'CO2' est ajouté pour identifier l'origine du tuple.
+- La clé 'AAAA' est réservée pour les moyennes générales CO2, permettant un traitement prioritaire et applicable aux marques absentes de la table CO2.
+
+  Résultat : <br />
+
 ![Resultat_deuxième_Job](https://github.com/Ibrahim-krimi/ProjetTPA/assets/104140096/dade6e50-619e-4409-8254-257dd77244b4)
 
 
+## 2. Scripts (Programmes)
+
+Ce répertoire contient les scripts utilisés ainsi que les fichiers de résultat des deux jobs 
 
