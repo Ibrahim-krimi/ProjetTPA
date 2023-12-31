@@ -1,9 +1,9 @@
-# MapReduceAutomobile
+# README MapReduce
 >HADOOP MAP REDUCE
 
 
-# Sujet **Cette tache est réalisé par  **<br />
-**Toutes les taches réalisées et effectuées au sein de ce projet sont réalisés par  **<br />
+# Sujet :
+Toutes les taches réalisées et effectuées au sein de ce projet sont réalisés par  <br />
 
 | **Nom / mail**                                |  **Groupe**                |
 |-----------------------------------------------|----------------------------|
@@ -15,8 +15,8 @@
 
 
 
+## 1. Prise en main (script pour executer les jobs)
 
-## Description
 
 Nous avons mis en place un script Bash qui a pour but d'automatiser le processus d'exportation des résultats d'un job MapReduce dans Hadoop vers une table Hive. 
 Le script exécute des jobs MapReduce, crée une table Hive et y charge les données.
@@ -85,3 +85,18 @@ HADOOP_RESULT_PATH="hdfs:/chemin/vers/resultats"
 
 Le script supprimera toute table Hive existante portant le même nom avant de créer la nouvelle table. Assurez-vous que cela ne posera pas de problème avec vos données existantes.
 Les sections commentées relatives à l'exportation Sqoop peuvent être décommentées si nécessaire, en fonction de vos besoins spécifiques.
+## 2. Explication des scripts utilisés
+
+Cette section va exposer les procédures suivies pour traiter le fichier CO2.csv et le fusionner avec la table du catalogue. 
+
+Nous avons mis en œuvre deux jobs MapReduce distincts pour parvenir à notre objectif :
+
+  - Automobile-2.0. (Data Munging).
+  - AutomobileMultupleInput-2.0. (joining two data set).
+
+
+### 2.1. Premiere job (Automobile-2.0)
+
+Le job a pour responsabilité de purifier les données extraites du fichier CO2.csv, de pallier les lacunes informationnelles et de procéder au calcul de la moyenne générale
+
+Nettoyage: <br />
